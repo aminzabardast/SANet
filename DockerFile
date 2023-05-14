@@ -1,0 +1,11 @@
+FROM pytorch/pytorch:1.8.0-cuda11.1-cudnn8-devel
+LABEL authors="amin"
+
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
+RUN apt-get --assume-yes --allow-unauthenticated update
+RUN apt-get --assume-yes install git ninja-build
+RUN DEBIAN_FRONTEND=noninteractive TZ=etc/utc apt-get --assume-yes install python3-opencv
+RUN pip install --upgrade pip setuptools
+RUN pip install --upgrade numpy==1.18.5 albumentations==0.5.2 tensorboard==2.13.0
+RUN git clone -b "22.04-dev" https://github.com/NVIDIA/apex /apex
+RUN pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" /apex
