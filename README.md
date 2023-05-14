@@ -69,6 +69,54 @@ The training and testing datasets come from [PraNet](https://github.com/DengPing
 - [Albumentations 0.5](https://github.com/albumentations-team/albumentations)
 - [Apex](https://github.com/NVIDIA/apex)
 
+### Using Docker Containers
+
+Matching specific requirements (Python version, CUDA version, cuDNN version, etc.) may be challenging.
+You can use containerization technology to make sure environment is consistent.
+
+To do so, follow these steps:
+
+1. Make sure that `docker`, and `nvidia-container-toolkit` are installed in your system.
+2. [Create the custom](#creating-the-docker-image) image using the `DockerFile`.
+3. [Create a container]() form the image. Make sure that GPU parameters and volume mapping are added to the container creation command.
+4. Connect to the container and execute training or evaluation.
+
+### Creating the Docker Image
+
+Make sure you are in the root directory of the project, then execute the following command:
+
+```shell
+  docker build -f DockerFile -t sanet .
+```
+
+- `-f` attribute is to point to the location of `DockerFile`.
+- `-t` attribute is to name the image.
+
+### Creating the Container
+
+Replace `<ABSOLUTE_PATH_TO_PROJECT_ROOT>` with the absolute path to project's root. Then execute the following code to create the container.
+
+```shell
+    docker run \
+    -v <ABSOLUTE_PATH_TO_PROJECT_ROOT>:/workspace \
+    --name sanet-dev \
+    --pull missing \
+    --ipc host \
+    --gpus all \
+    sanet:latest 
+```
+
+- `-v` is to map a directory from your machine to the container.
+- `--name` is the name of the container.
+- `--gpus all` will give GPU access to GPUs.
+
+### Connecting to the Container
+
+Execute the following command to connect to the created container.
+
+```shell
+  docker exec --workdir /workspace -it sanet-dev bash
+```
 
 ## Training
 
